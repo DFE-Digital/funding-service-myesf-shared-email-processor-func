@@ -1,0 +1,25 @@
+{
+  "IsEncrypted": false,
+  "Values": {
+    "AdminApiClientConfiguration:ApiBaseAddress": "",
+    "AdminApiClientConfiguration:AppUri": "",
+    "AdminApiClientConfiguration:Authority": "",
+    "AdminApiClientConfiguration:ClientId": "",
+    "AdminApiClientConfiguration:ClientSecret": "",
+    "AdminApiClientConfiguration:TenantId": "",
+    "APPINSIGHTS_INSTRUMENTATIONKEY": "",
+    "AzureKeyVaultURI": "",
+    "AzureStorageConfiguration:ConnectionString": "",
+    "AzureWebJobsDashboard": "UseDevelopmentStorage=true",
+    "AzureWebJobsStorage": "UseDevelopmentStorage=true",
+    "CacheEncryptionSecretKey": "",
+    "Environment": "local",
+    "FUNCTIONS_EXTENSION_VERSION": "~4",
+    "FUNCTIONS_WORKER_RUNTIME": "dotnet-isolated",
+    "PdsApplicationInsights:Environment": "",
+    "PdsApplicationInsights:InstrumentationKey": "",
+    "QueueName": "",
+    "RedisConfiguration:ConnectionString": "",
+    "ServiceBusConnection": ""
+  }
+}

@@ -1,0 +1,49 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 18
+VisualStudioVersion = 18.7.11925.98
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pds.Shared.EmailProcessor.Func", "Pds.Shared.EmailProcessor.Func\Pds.Shared.EmailProcessor.Func.csproj", "{1E45B35A-50FD-6185-CA6A-F0C2D2AC2716}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pds.Shared.EmailProcessor.Func.Tests", "Pds.Shared.EmailProcessor.Func.Tests\Pds.Shared.EmailProcessor.Func.Tests.csproj", "{55EDFB54-12C5-B7A0-729E-14E7EAC47C46}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pds.Shared.EmailProcessor.Services", "Pds.Shared.EmailProcessor.Services\Pds.Shared.EmailProcessor.Services.csproj", "{D8C48D74-054B-B0A5-C633-D633995B845C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pds.Shared.EmailProcessor.Services.Tests", "Pds.Shared.EmailProcessor.Services.Tests\Pds.Shared.EmailProcessor.Services.Tests.csproj", "{C0A388DE-AF6B-34B2-48EB-41F305A6AF62}"
+EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{81DDED9D-158B-E303-5F62-77A2896D2A5A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1E45B35A-50FD-6185-CA6A-F0C2D2AC2716}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1E45B35A-50FD-6185-CA6A-F0C2D2AC2716}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1E45B35A-50FD-6185-CA6A-F0C2D2AC2716}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1E45B35A-50FD-6185-CA6A-F0C2D2AC2716}.Release|Any CPU.Build.0 = Release|Any CPU
+		{55EDFB54-12C5-B7A0-729E-14E7EAC47C46}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{55EDFB54-12C5-B7A0-729E-14E7EAC47C46}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{55EDFB54-12C5-B7A0-729E-14E7EAC47C46}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{55EDFB54-12C5-B7A0-729E-14E7EAC47C46}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D8C48D74-054B-B0A5-C633-D633995B845C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D8C48D74-054B-B0A5-C633-D633995B845C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D8C48D74-054B-B0A5-C633-D633995B845C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D8C48D74-054B-B0A5-C633-D633995B845C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C0A388DE-AF6B-34B2-48EB-41F305A6AF62}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C0A388DE-AF6B-34B2-48EB-41F305A6AF62}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C0A388DE-AF6B-34B2-48EB-41F305A6AF62}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C0A388DE-AF6B-34B2-48EB-41F305A6AF62}.Release|Any CPU.Build.0 = Release|Any CPU
+		{81DDED9D-158B-E303-5F62-77A2896D2A5A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{81DDED9D-158B-E303-5F62-77A2896D2A5A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{81DDED9D-158B-E303-5F62-77A2896D2A5A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{81DDED9D-158B-E303-5F62-77A2896D2A5A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C3F815A8-010D-41BE-8AE6-246E9BF3584A}
+	EndGlobalSection
+EndGlobal

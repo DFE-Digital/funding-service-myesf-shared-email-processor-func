@@ -1,0 +1,31 @@
+{
+  "version": "2.0",
+  "extensionBundle": {
+    "id": "Microsoft.Azure.Functions.ExtensionBundle",
+    "version": "[4.0.0, 5.0.0)"
+  },
+  "extensions": {
+    "serviceBus": {
+      "messageHandlerOptions": {
+        "autoComplete": true,
+        // The maximum number of concurrent calls to the callback the message
+        // pump should initiate. The default is 16.
+        "maxConcurrentCalls": 10
+      }
+    }
+  },
+  "logging": {
+    "applicationInsights": {
+      "samplingSettings": {
+        "isEnabled": true,
+        "excludedTypes": "Request"
+      }
+    },
+    "logLevel": {
+      "default": "Information",
+      "Microsoft": "Warning",
+      "Azure.Core": "Warning",
+      "Azure.Messaging.ServiceBus": "Warning"
+    }
+  }
+}

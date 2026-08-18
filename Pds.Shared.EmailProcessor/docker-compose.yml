@@ -1,0 +1,10 @@
+---
+services:
+  pds.shared.emailprocessor.func:
+    image: ${DOCKER_REGISTRY-}pdssharedemailprocessorfunc
+    build:
+      context: .
+      dockerfile: Pds.Shared.EmailProcessor.Func/Dockerfile
+
+  redis:
+    image: redis

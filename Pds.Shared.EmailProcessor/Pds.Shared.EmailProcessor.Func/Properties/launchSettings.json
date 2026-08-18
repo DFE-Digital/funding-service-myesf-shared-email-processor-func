@@ -1,0 +1,18 @@
+{
+  "profiles": {
+    "Pds.Shared.EmailProcessor.Func": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    },
+    "Container (Dockerfile)": {
+      "commandName": "Docker",
+      "launchBrowser": true,
+      "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}",
+      "containerRunArguments": "--init",
+      "httpPort": 30834,
+      "useSSL": false
+    }
+  }
+}

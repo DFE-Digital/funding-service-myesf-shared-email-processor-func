@@ -1,0 +1,5 @@
+---
+services:
+  pds.shared.emailprocessor.func:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development

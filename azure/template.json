@@ -1,0 +1,414 @@
+﻿{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "resourceEnvironmentName": {
+            "type": "string",
+            "metadata": {
+                "description": "Short name of the environment. Used for the name of resources created."
+            }
+        },
+        "serviceName": {
+            "type": "string",
+            "metadata": {
+                "description": "Short name of the service. Used for the name of resources created."
+            }
+        },
+        "aspSize": {
+            "type": "string",
+            "defaultValue": "1"
+        },
+        "aspInstances": {
+            "type": "int",
+            "defaultValue": 1
+        },
+        "aspTier": {
+            "type": "string",
+            "defaultValue": "Basic"
+        },
+        "sharedResourceGroupName": {
+            "type": "string"
+        },
+        "sharedAppInsightsName": {
+            "type": "string"
+        },
+        "sharedStorageAccountName": {
+            "type": "string"
+        },
+        "sharedServiceBusName": {
+            "type": "string"
+        },
+        "serviceBusAccessKeyName": {
+            "type": "string"
+        },
+        "SharedKeyVaultName": {
+            "type": "string"
+        },
+        "azureKeyVaultURI": {
+            "type": "string"
+        },
+        "AverageResponseTimeAlertThreshhold": {
+            "type": "string",
+            "defaultValue": "2"
+        },
+        "HttpServerErrorAlertThreshhold": {
+            "type": "string",
+            "defaultValue": "50"
+        },
+        "RequestCountAlertThreshhold": {
+            "type": "string",
+            "defaultValue": "1000"
+        },
+        "ActionGroupName": {
+            "type": "string",
+            "defaultValue": ""
+        },
+        "CPUPercentageAlertThreshhold": {
+            "type": "string",
+            "defaultValue": "75"
+        },
+        "MemoryPercentageAlertThreshhold": {
+            "type": "string",
+            "defaultValue": "75"
+        },
+        "AdminApiBaseAddress": {
+            "type": "string"
+        },
+        "AdminApiAppUri": {
+            "type": "string"
+        },
+        "AdminApiClientId": {
+            "type": "string"
+        },
+        "sharedRedisCacheName": {
+            "type": "string"
+        }
+    },
+    "variables": {
+        "deploymentUrlBase": "https://raw.githubusercontent.com/SkillsFundingAgency/funding-platform-building-blocks/master/templates/",
+        "resourceNamePrefix": "[toLower(concat('pds-', parameters('resourceEnvironmentName'),'-', parameters('serviceName')))]",
+        "serviceBusQueueName": "pds-shared-emailprocessor",
+        "functionAppName": "[concat(variables('resourceNamePrefix'), 'wkr-fa')]",
+        "appServicePlanName": "[concat(variables('resourceNamePrefix'), 'wkr-asp')]",
+        "EnableAlertsAndMetrics": "[equals(parameters('resourceEnvironmentName'), 'release')]",
+        "AppServiceMetricsToAlertUpon": [
+            {
+                "MetricName": "Http5xx",
+                "Operator": "GreaterThanOrEqual",
+                "Threshold": "[parameters('HttpServerErrorAlertThreshhold')]",
+                "TimeWindow": "PT5M",
+                "Aggregation": "Total"
+            },
+            {
+                "MetricName": "AverageResponseTime",
+                "Operator": "GreaterThanOrEqual",
+                "Threshold": "[parameters('AverageResponseTimeAlertThreshhold')]",
+                "TimeWindow": "PT5M",
+                "Aggregation": "Average"
+            },
+            {
+                "MetricName": "Requests",
+                "Operator": "GreaterThanOrEqual",
+                "Threshold": "[parameters('RequestCountAlertThreshhold')]",
+                "TimeWindow": "PT5M",
+                "Aggregation": "Average"
+            }
+        ],
+        "AppServicePlanMetricsToAlertUpon": [
+            {
+                "MetricName": "CpuPercentage",
+                "Operator": "GreaterThanOrEqual",
+                "Threshold": "[parameters('CPUPercentageAlertThreshhold')]",
+                "TimeWindow": "PT5M",
+                "Aggregation": "Average"
+            },
+            {
+                "MetricName": "MemoryPercentage",
+                "Operator": "GreaterThanOrEqual",
+                "Threshold": "[parameters('MemoryPercentageAlertThreshhold')]",
+                "TimeWindow": "PT5M",
+                "Aggregation": "Average"
+            }
+        ]
+    },
+    "resources": [
+        {
+            "apiVersion": "2017-05-10",
+            "name": "app-service-plan",
+            "type": "Microsoft.Resources/deployments",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('deploymentUrlBase'),'app-service-plan.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "appServicePlanName": {
+                        "value": "[variables('appServicePlanName')]"
+                    },
+                    "aspSize": {
+                        "value": "[parameters('aspSize')]"
+                    },
+                    "aspInstances": {
+                        "value": "[parameters('aspInstances')]"
+                    },
+                    "nonASETier": {
+                        "value": "[parameters('aspTier')]"
+                    }
+                }
+            }
+        },
+        {
+            "apiVersion": "2017-05-10",
+            "name": "function-app",
+            "type": "Microsoft.Resources/deployments",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('deploymentUrlBase'),'function-app.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "functionAppName": {
+                        "value": "[variables('functionAppName')]"
+                    },
+                    "appServicePlanName": {
+                        "value": "[variables('appServicePlanName')]"
+                    },
+                    "appServicePlanResourceGroup": {
+                        "value": "[resourceGroup().name]"
+                    },
+                    "functionAppAppSettings": {
+                      "value": [
+                        {
+                          "name": "Environment",
+                          "value": "[parameters('resourceEnvironmentName')]"
+                        },
+                        {
+                          "name": "AzureWebJobsStorage",
+                          "value": "[concat('DefaultEndpointsProtocol=https;AccountName=',parameters('sharedStorageAccountName'),';AccountKey=',listKeys(resourceId(parameters('sharedResourceGroupName'),'Microsoft.Storage/storageAccounts',parameters('sharedStorageAccountName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value, ';EndpointSuffix=core.windows.net')]"
+                        },
+                        {
+                          "name": "AzureStorageConfiguration:ConnectionString",
+                          "value": "[concat('DefaultEndpointsProtocol=https;AccountName=',parameters('sharedStorageAccountName'),';AccountKey=',listKeys(resourceId(parameters('sharedResourceGroupName'),'Microsoft.Storage/storageAccounts',parameters('sharedStorageAccountName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value, ';EndpointSuffix=core.windows.net')]"
+                        },
+                        {
+                          "name": "AzureWebJobsDashboard",
+                          "value": "[concat('DefaultEndpointsProtocol=https;AccountName=',parameters('sharedStorageAccountName'),';AccountKey=',listKeys(resourceId(parameters('sharedResourceGroupName'),'Microsoft.Storage/storageAccounts',parameters('sharedStorageAccountName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value, ';EndpointSuffix=core.windows.net')]"
+                        },
+                        {
+                          "name": "FUNCTIONS_EXTENSION_VERSION",
+                          "value": "~4"
+                        },
+                        {
+                          "name": "FUNCTIONS_WORKER_RUNTIME",
+                          "value": "dotnet-isolated"
+                        },
+                        {
+                          "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
+                          "value": "[reference(resourceId(parameters('sharedResourceGroupName'), 'microsoft.insights/components', parameters('sharedAppInsightsName')),'2015-05-01').InstrumentationKey]"
+                        },
+                        {
+                          "name": "PdsApplicationInsights:InstrumentationKey",
+                          "value": "[reference(resourceId(parameters('sharedResourceGroupName'), 'microsoft.insights/components', parameters('sharedAppInsightsName')),'2015-05-01').InstrumentationKey]"
+                        },
+                        {
+                          "name": "PdsApplicationInsights:Environment",
+                          "value": "[parameters('resourceEnvironmentName')]"
+                        },
+
+                        {
+                          "name": "ServiceBusConnection",
+                          "value": "[listKeys(resourceId(parameters('sharedResourceGroupName'),'Microsoft.ServiceBus/namespaces/AuthorizationRules',parameters('sharedServiceBusName'), parameters('serviceBusAccessKeyName')),'2015-08-01').primaryConnectionString]"
+                        },
+                        {
+                          "name": "QueueName",
+                          "value": "[variables('serviceBusQueueName')]"
+                        },
+                        {
+                          "name": "AzureKeyVaultURI",
+                          "value": "[parameters('azureKeyVaultURI')]"
+                        },
+                        {
+                          "name": "AdminApiClientConfiguration:ApiBaseAddress",
+                          "value": "[parameters('AdminApiBaseAddress')]"
+                        },
+                        {
+                          "name": "AdminApiClientConfiguration:Authority",
+                          "value": "https://login.microsoftonline.com/"
+                        },
+                        {
+                          "name": "AdminApiClientConfiguration:TenantId",
+                          "value": "[subscription().tenantId]"
+                        },
+                        {
+                          "name": "AdminApiClientConfiguration:AppUri",
+                          "value": "[parameters('AdminApiAppUri')]"
+                        },
+                        {
+                          "name": "AdminApiClientConfiguration:ClientId",
+                          "value": "[parameters('AdminApiClientId')]"
+                        },
+                        {
+                          "name": "AdminApiClientConfiguration:ClientSecret",
+                          "value": "[concat('@Microsoft.KeyVault(VaultName=', parameters('sharedKeyVaultName'), ';SecretName=AdminApiClientSecret)')]"
+                        },
+                        {
+                          "name": "RedisConfiguration:ConnectionString",
+                          "value": "[concat(parameters('sharedRedisCacheName'), '.redis.cache.windows.net:6380,password=', listKeys(resourceId(parameters('sharedResourceGroupName'), 'Microsoft.Cache/Redis', parameters('sharedRedisCacheName')), '2016-04-01').primaryKey, ',ssl=True,abortConnect=False')]"
+                        },
+                        {
+                          "name": "CacheEncryptionSecretKey",
+                          "value": "[concat('@Microsoft.KeyVault(VaultName=', parameters('sharedKeyVaultName'), ';SecretName=SharedEmailProcessorCacheEncryptionSecretKey)')]"
+                        }
+                      ]
+                    }
+                }
+            },
+            "dependsOn": [
+                "app-service-plan"
+            ]
+        },
+        {
+            "apiVersion": "2017-05-10",
+            "name": "[concat(variables('AppServicePlanName'), '-metric-', tolower(variables('AppServicePlanMetricsToAlertUpon')[copyIndex()].MetricName))]",
+            "type": "Microsoft.Resources/deployments",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('deploymentUrlBase'), 'alert-rules.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "enabled": {
+                        "value": "[variables('EnableAlertsAndMetrics')]"
+                    },
+                    "alertName": {
+                        "value": "[concat(variables('AppServicePlanName'), '-metric-', tolower(variables('AppServicePlanMetricsToAlertUpon')[copyIndex()].MetricName))]"
+                    },
+                    "alertSeverity": {
+                        "value": 3
+                    },
+                    "metricName": {
+                        "value": "[variables('AppServicePlanMetricsToAlertUpon')[copyIndex()].MetricName]"
+                    },
+                    "operator": {
+                        "value": "[variables('AppServicePlanMetricsToAlertUpon')[copyIndex()].Operator]"
+                    },
+                    "threshold": {
+                        "value": "[variables('AppServicePlanMetricsToAlertUpon')[copyIndex()].Threshold]"
+                    },
+                    "aggregation": {
+                        "value": "[variables('AppServicePlanMetricsToAlertUpon')[copyIndex()].Aggregation]"
+                    },
+                    "windowSize": {
+                        "value": "[variables('AppServicePlanMetricsToAlertUpon')[copyIndex()].TimeWindow]"
+                    },
+                    "evaluationFrequency": {
+                        "value": "PT1M"
+                    },
+                    "actionGroupName": {
+                        "value": "[parameters('ActionGroupName')]"
+                    },
+                    "actionGroupResourceGroup": {
+                        "value": "[parameters('sharedResourceGroupName')]"
+                    },
+                    "resourceId": {
+                        "value": "[resourceId('Microsoft.Web/serverfarms', variables('AppServicePlanName'))]"
+                    }
+                }
+            },
+            "copy": {
+                "name": "AppServicePlanMetricCopy",
+                "count": "[length(variables('AppServicePlanMetricsToAlertUpon'))]"
+            },
+            "dependsOn": [
+                "app-service-plan"
+            ]
+        },
+        {
+            "apiVersion": "2017-05-10",
+            "name": "[concat(variables('functionAppName'), '-metric-', tolower(variables('AppServiceMetricsToAlertUpon')[copyIndex()].MetricName))]",
+            "type": "Microsoft.Resources/deployments",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('deploymentUrlBase'), 'alert-rules.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "enabled": {
+                        "value": "[variables('EnableAlertsAndMetrics')]"
+                    },
+                    "alertName": {
+                        "value": "[concat(variables('functionAppName'), '-metric-', tolower(variables('AppServiceMetricsToAlertUpon')[copyIndex()].MetricName))]"
+                    },
+                    "alertSeverity": {
+                        "value": 3
+                    },
+                    "metricName": {
+                        "value": "[variables('AppServiceMetricsToAlertUpon')[copyIndex()].MetricName]"
+                    },
+                    "operator": {
+                        "value": "[variables('AppServiceMetricsToAlertUpon')[copyIndex()].Operator]"
+                    },
+                    "threshold": {
+                        "value": "[variables('AppServiceMetricsToAlertUpon')[copyIndex()].Threshold]"
+                    },
+                    "aggregation": {
+                        "value": "[variables('AppServiceMetricsToAlertUpon')[copyIndex()].Aggregation]"
+                    },
+                    "windowSize": {
+                        "value": "[variables('AppServiceMetricsToAlertUpon')[copyIndex()].TimeWindow]"
+                    },
+                    "evaluationFrequency": {
+                        "value": "PT1M"
+                    },
+                    "actionGroupName": {
+                        "value": "[parameters('ActionGroupName')]"
+                    },
+                    "actionGroupResourceGroup": {
+                        "value": "[parameters('sharedResourceGroupName')]"
+                    },
+                    "resourceId": {
+                        "value": "[resourceId('Microsoft.Web/sites', variables('functionAppName'))]"
+                    }
+                }
+            },
+            "copy": {
+                "name": "AppServiceMetricCopy",
+                "count": "[length(variables('AppServiceMetricsToAlertUpon'))]"
+            },
+            "dependsOn": [
+                "function-app"
+            ]
+        },
+        {
+            "apiVersion": "2017-05-10",
+            "name": "service-bus-queue-shared-emailprocessor",
+            "type": "Microsoft.Resources/deployments",
+            "resourceGroup": "[parameters('sharedResourceGroupName')]",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('deploymentUrlBase'),'service-bus-queue.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "serviceBusNamespaceName": {
+                        "value": "[parameters('sharedServiceBusName')]"
+                    },
+                    "queueName": {
+                        "value": "[variables('serviceBusQueueName')]"
+                    }
+                }
+            }
+        }
+    ],
+    "outputs": {
+        "FunctionAppName": {
+            "type": "string",
+            "value": "[variables('functionAppName')]"
+        }
+    }
+}
