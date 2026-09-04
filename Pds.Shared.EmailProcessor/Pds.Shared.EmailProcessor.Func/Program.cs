@@ -31,7 +31,6 @@ try
         .AddFunctionServices()
         .AddFeatureServices()
         .AddLoggerAdapter()
-        .AddAutomapperConfiguration()
         .AddRedisAndMemoryCache(options => builder.Configuration.Bind(nameof(RedisConfiguration), options))
         .AddNotifyApiClient(options => builder.Configuration.Bind(nameof(AdminApiClientConfiguration), options))
         .AddPdsApplicationInsightsTelemetry(options =>

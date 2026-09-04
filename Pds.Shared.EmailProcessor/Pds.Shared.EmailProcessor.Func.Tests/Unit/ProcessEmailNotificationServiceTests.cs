@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using FluentAssertions;
+﻿using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Newtonsoft.Json;
@@ -31,8 +30,6 @@ namespace Pds.Shared.EmailProcessor.Func.Tests.Unit
 
         private readonly Mock<ILoggerAdapter<ProcessEmailNotificationService>> _mockLogger =
             new Mock<ILoggerAdapter<ProcessEmailNotificationService>>(MockBehavior.Strict);
-
-        private readonly IMapper _mapper = GetMapper();
 
         [TestMethod]
         [DynamicData(
@@ -146,11 +143,6 @@ namespace Pds.Shared.EmailProcessor.Func.Tests.Unit
             _mockLogger.Verify(logger => logger.LogError(It.IsAny<Exception>(), It.Is<string>(message => message == errorMessage)));
         }
 
-        private static IMapper GetMapper()
-        {
-            return new MapperConfiguration(x => x.AddProfile(new FunctionAutoMapperProfile())).CreateMapper();
-        }
-
         private ProcessEmailNotificationService GetProcessEmailNotificationService()
         {
             _mockLogger.Setup(logger => logger.LogError(It.IsAny<Exception>(), It.IsAny<string>()));
@@ -163,7 +155,6 @@ namespace Pds.Shared.EmailProcessor.Func.Tests.Unit
 
             return new ProcessEmailNotificationService(
                 _mockSendNotificationService.Object,
-                _mapper,
                 _mockEmailTemplateService.Object,
                 _mockLogger.Object,
                 _mockCacheService.Object);
