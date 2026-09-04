@@ -6,7 +6,6 @@ using Pds.Core.Caching.Interfaces;
 using Pds.Core.Caching.Models;
 using Pds.Core.Logging;
 using Pds.Core.Notification.Models;
-using Pds.Shared.EmailProcessor.Func.Config;
 using Pds.Shared.EmailProcessor.Func.Exceptions;
 using Pds.Shared.EmailProcessor.Func.Implementations;
 using Pds.Shared.EmailProcessor.Services.Interfaces;

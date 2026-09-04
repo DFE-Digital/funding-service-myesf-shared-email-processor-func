@@ -13,7 +13,6 @@ using Pds.Core.Caching;
 using Pds.Core.Caching.Models;
 using Pds.Core.Logging;
 using Pds.Core.Telemetry.ApplicationInsights;
-using Pds.Shared.EmailProcessor.Func.Config;
 using Pds.Shared.EmailProcessor.Func.DependencyInjection;
 using Pds.Shared.EmailProcessor.Services.DependencyInjection;
 
