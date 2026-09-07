@@ -52,7 +52,7 @@ namespace Pds.Shared.EmailProcessor.Func.Tests.Unit
             EmailNotification actual = EmailProcessorMappings.ToEmailNotifiction(inputnotifiction);
 
             //Assert
-            actual.EmailPersonalisation = expected.EmailPersonalisation;
+            actual.EmailPersonalisation.Equals(expected.EmailPersonalisation); // = expected.EmailPersonalisation;
         }
 
         [TestMethod]
@@ -83,7 +83,7 @@ namespace Pds.Shared.EmailProcessor.Func.Tests.Unit
             EmailTemplateRequest actual = EmailProcessorMappings.ToEmailTemplateRequest(inputnotifiction);
 
             //Assert
-            actual = expected;
+            actual.Equals(expected);
         }
     }
 }

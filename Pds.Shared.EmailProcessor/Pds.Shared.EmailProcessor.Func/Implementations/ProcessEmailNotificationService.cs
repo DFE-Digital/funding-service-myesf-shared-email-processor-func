@@ -90,8 +90,7 @@ namespace Pds.Shared.EmailProcessor.Func.Implementations
         /// <inheritdoc />
         public async Task<EmailTemplateResponse> ProcessEmailTemplateResponse(NotificationMessage notificationMessage, NotificationAuditEntry auditEntry)
         {
-            var emailTemplateRequest = EmailProcessorMappings.ToEmailTemplateRequest(notificationMessage);
-
+            var emailTemplateRequest = notificationMessage.ToEmailTemplateRequest();
             var cacheKey =
                     $"{nameof(EmailTemplateResponse)}-{notificationMessage.EmailMessageType}-{notificationMessage.RequestingService}";
 
