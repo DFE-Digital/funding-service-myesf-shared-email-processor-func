@@ -15,14 +15,14 @@ namespace Pds.Shared.EmailProcessor.Func.Tests.Unit
     public class EmailProcessorMappingsTests
     {
         [TestMethod]
-        public void TestToEmailNotification_ValidNotificationMessage_ReturnsExpectedEmailNotification()
+        public void ToEmailNotification_ValidNotificationMessage_ReturnsExpectedEmailNotification()
         {
             //Arrange
             NotificationMessage inputnotifiction = new NotificationMessage
             {
-                EmailAddresses = new List<string> { },
-                RequestingService = "test",
-                EmailMessageType = "test",
+                EmailAddresses = null,
+                RequestingService = null,
+                EmailMessageType = null,
                 EmailPersonalisation = new Core.Notification.Models.GovUkNotifyPersonalisation
                 {
                     Personalisation = new Dictionary<string, object>
@@ -35,9 +35,9 @@ namespace Pds.Shared.EmailProcessor.Func.Tests.Unit
 
             EmailNotification expected = new EmailNotification
             {
-                EmailAddress = "email",
-                NotifyApiKeySecretName = "test",
-                TemplateId = "test",
+                EmailAddress = null,
+                NotifyApiKeySecretName = null,
+                TemplateId = null,
                 EmailPersonalisation = new Services.Models.GovUkNotifyPersonalisation
                 {
                     Personalisation = new Dictionary<string, object>
@@ -53,10 +53,14 @@ namespace Pds.Shared.EmailProcessor.Func.Tests.Unit
 
             //Assert
             Assert.AreEqual(expected.EmailPersonalisation.Personalisation.First(), actual.EmailPersonalisation.Personalisation.First());
+            Assert.AreEqual(expected.EmailPersonalisation.Personalisation.Count(), actual.EmailPersonalisation.Personalisation.Count());
+            Assert.AreEqual(expected.EmailAddress, actual.EmailAddress);
+            Assert.AreEqual(expected.NotifyApiKeySecretName, actual.NotifyApiKeySecretName);
+            Assert.AreEqual(expected.TemplateId, actual.TemplateId);
         }
 
         [TestMethod]
-        public void TestToEmailTemplateRequest_ValidNotificationMessage_ReturnsExpectedEmailNotification()
+        public void ToEmailTemplateRequest_ValidNotificationMessage_ReturnsExpectedEmailNotification()
         {
             //Arrange
             NotificationMessage inputnotifiction = new NotificationMessage
@@ -86,6 +90,7 @@ namespace Pds.Shared.EmailProcessor.Func.Tests.Unit
             Assert.AreEqual(expected.EmailMessageType, actual.EmailMessageType);
             Assert.AreEqual(expected.RequestingService, actual.RequestingService);
             Assert.AreEqual(expected.MetaData.First(), actual.MetaData.First());
+            Assert.AreEqual(expected.MetaData.Count(), actual.MetaData.Count());
         }
     }
 }
