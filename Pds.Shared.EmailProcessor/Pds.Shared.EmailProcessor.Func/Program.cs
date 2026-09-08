@@ -13,7 +13,6 @@ using Pds.Core.Caching;
 using Pds.Core.Caching.Models;
 using Pds.Core.Logging;
 using Pds.Core.Telemetry.ApplicationInsights;
-using Pds.Shared.EmailProcessor.Func.Config;
 using Pds.Shared.EmailProcessor.Func.DependencyInjection;
 using Pds.Shared.EmailProcessor.Services.DependencyInjection;
 
@@ -31,7 +30,6 @@ try
         .AddFunctionServices()
         .AddFeatureServices()
         .AddLoggerAdapter()
-        .AddAutomapperConfiguration()
         .AddRedisAndMemoryCache(options => builder.Configuration.Bind(nameof(RedisConfiguration), options))
         .AddNotifyApiClient(options => builder.Configuration.Bind(nameof(AdminApiClientConfiguration), options))
         .AddPdsApplicationInsightsTelemetry(options =>

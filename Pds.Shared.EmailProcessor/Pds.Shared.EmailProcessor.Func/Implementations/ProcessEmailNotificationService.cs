@@ -1,9 +1,9 @@
-﻿using AutoMapper;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using Pds.Core.Caching.Interfaces;
 using Pds.Core.Logging;
 using Pds.Core.Notification.Models;
 using Pds.Shared.EmailProcessor.Func.Exceptions;
+using Pds.Shared.EmailProcessor.Func.Extensions;
 using Pds.Shared.EmailProcessor.Func.Helpers;
 using Pds.Shared.EmailProcessor.Func.Interfaces;
 using Pds.Shared.EmailProcessor.Services.Interfaces;
@@ -18,7 +18,7 @@ namespace Pds.Shared.EmailProcessor.Func.Implementations
     public class ProcessEmailNotificationService : IProcessEmailNotificationService
     {
         private readonly ISendNotificationService<EmailNotification> _sendEmailNotificationService;
-        private readonly IMapper _mapper;
+
         private readonly IEmailTemplateService _emailTemplateService;
         private readonly ILoggerAdapter<ProcessEmailNotificationService> _logger;
         private readonly ICacheService _cacheService;
@@ -27,19 +27,16 @@ namespace Pds.Shared.EmailProcessor.Func.Implementations
         /// Initializes a new instance of the <see cref="ProcessEmailNotificationService"/> class.
         /// </summary>
         /// <param name="sendEmailNotificationService">The send email notification service.</param>
-        /// <param name="mapper">The mapper.</param>
         /// <param name="emailTemplateService">The email template service.</param>
         /// <param name="logger">The logger.</param>
         /// <param name="cacheService">The cache service.</param>
         public ProcessEmailNotificationService(
             ISendNotificationService<EmailNotification> sendEmailNotificationService,
-            IMapper mapper,
             IEmailTemplateService emailTemplateService,
             ILoggerAdapter<ProcessEmailNotificationService> logger,
             ICacheService cacheService)
         {
             _sendEmailNotificationService = sendEmailNotificationService;
-            _mapper = mapper;
             _emailTemplateService = emailTemplateService;
             _logger = logger;
             _cacheService = cacheService;
@@ -93,8 +90,7 @@ namespace Pds.Shared.EmailProcessor.Func.Implementations
         /// <inheritdoc />
         public async Task<EmailTemplateResponse> ProcessEmailTemplateResponse(NotificationMessage notificationMessage, NotificationAuditEntry auditEntry)
         {
-            var emailTemplateRequest = _mapper.Map<EmailTemplateRequest>(notificationMessage);
-
+            var emailTemplateRequest = notificationMessage.ToEmailTemplateRequest();
             var cacheKey =
                     $"{nameof(EmailTemplateResponse)}-{notificationMessage.EmailMessageType}-{notificationMessage.RequestingService}";
 
@@ -111,7 +107,8 @@ namespace Pds.Shared.EmailProcessor.Func.Implementations
             string notifyApiKeySecretName)
         {
             var result = new SendNotificationResponse();
-            var emailNotification = _mapper.Map<EmailNotification>(notificationMessage);
+
+            var emailNotification = notificationMessage.ToEmailNotifiction();
             emailNotification.TemplateId = emailTemplateId;
             emailNotification.NotifyApiKeySecretName = notifyApiKeySecretName;
 
