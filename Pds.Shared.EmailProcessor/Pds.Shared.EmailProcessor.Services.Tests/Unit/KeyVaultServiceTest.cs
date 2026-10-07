@@ -64,7 +64,7 @@ namespace Pds.Shared.EmailProcessor.Services.Tests.Unit
             var expected = new Mock<Response<KeyVaultSecret>>();
             expected.Setup(x => x.Value).Returns(new KeyVaultSecret(secretName, secretValue));
 
-            _secretClientMock.Setup(client => client.GetSecretAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>())).Returns(Task.FromResult(expected.Object));
+            _secretClientMock.Setup(client => client.GetSecretAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<SecretContentType?>(), It.IsAny<CancellationToken>())).Returns(Task.FromResult(expected.Object));
 
             _mockLogger.Setup(logger => logger.LogError(It.IsAny<string>()));
             _mockLogger.Setup(logger => logger.LogInformation(It.IsAny<string>()));
@@ -76,7 +76,7 @@ namespace Pds.Shared.EmailProcessor.Services.Tests.Unit
 
         private void SecretClientCalledTimes(Func<Times> times)
         {
-            _secretClientMock.Verify(client => client.GetSecretAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()), times);
+            _secretClientMock.Verify(client => client.GetSecretAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<SecretContentType?>(), It.IsAny<CancellationToken>()), times);
         }
     }
 }
