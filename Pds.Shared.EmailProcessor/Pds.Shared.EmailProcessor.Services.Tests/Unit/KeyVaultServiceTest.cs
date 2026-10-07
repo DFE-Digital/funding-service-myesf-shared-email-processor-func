@@ -42,7 +42,7 @@ namespace Pds.Shared.EmailProcessor.Services.Tests.Unit
             var keyVaultService = GetKeyVaultService();
 
             // Assert
-            Assert.ThrowsExceptionAsync<ArgumentException>(async () => await keyVaultService.GetSecretValue(secretName))
+            Assert.ThrowsAsync<ArgumentException>(async () => await keyVaultService.GetSecretValue(secretName))
                 .Result.Message.Should().Be("Secret name cannot be null or empty");
             SecretClientCalledTimes(Times.Never);
         }
@@ -55,7 +55,7 @@ namespace Pds.Shared.EmailProcessor.Services.Tests.Unit
             _secretClientMock.Setup(client => client.GetSecret(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>())).Throws(new Exception());
 
             // Act
-            Assert.ThrowsExceptionAsync<Exception>(async () => await keyVaultService.GetSecretValue("name"));
+            Assert.ThrowsAsync<Exception>(async () => await keyVaultService.GetSecretValue("name"));
             SecretClientCalledTimes(Times.Once);
         }
 

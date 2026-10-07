@@ -70,8 +70,7 @@ namespace Pds.Shared.EmailProcessor.Services.Tests.Unit
         [TestMethod]
         [DynamicData(
             nameof(SendNotificationInput),
-            typeof(UnitTestSetupBase),
-            DynamicDataSourceType.Method)]
+            typeof(UnitTestSetupBase))]
         public async Task SendNotificationAsyncAsyncTests(
             string responseId,
             bool throwException,
