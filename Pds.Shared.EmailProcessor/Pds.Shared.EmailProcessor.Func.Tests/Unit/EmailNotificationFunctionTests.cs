@@ -31,8 +31,7 @@ namespace Pds.Shared.EmailProcessor.Func.Tests.Unit
         [TestMethod]
         [DynamicData(
             nameof(RunInput),
-            typeof(UnitTestSetupBase),
-            DynamicDataSourceType.Method)]
+            typeof(UnitTestSetupBase))]
         public async Task Run_ReturnsExpectedResult(
             NotificationMessage notificationMessage,
             EmailTemplateResponse emailTemplateResponse,

@@ -33,8 +33,7 @@ namespace Pds.Shared.EmailProcessor.Func.Tests.Unit
         [TestMethod]
         [DynamicData(
             nameof(SendEmailNotificationInput),
-            typeof(UnitTestSetupBase),
-            DynamicDataSourceType.Method)]
+            typeof(UnitTestSetupBase))]
         public async Task SendEmailNotification_ReturnsExpectedResult(
             NotificationMessage notificationMessage,
             EmailTemplateResponse emailTemplateResponse,
@@ -65,8 +64,7 @@ namespace Pds.Shared.EmailProcessor.Func.Tests.Unit
         [TestMethod]
         [DynamicData(
             nameof(ProcessEmailTemplateResponse),
-            typeof(UnitTestSetupBase),
-            DynamicDataSourceType.Method)]
+            typeof(UnitTestSetupBase))]
         public async Task ProcessEmailTemplateResponse_ReturnsExpectedResult(
             NotificationMessage notificationMessage,
             EmailTemplateResponse emailTemplateApiResponse,

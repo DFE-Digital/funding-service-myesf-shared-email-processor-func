@@ -29,8 +29,7 @@ namespace Pds.Shared.EmailProcessor.Services.Tests.Unit
         [TestMethod]
         [DynamicData(
             nameof(GetEmailTemplateDetailsAsyncInput),
-            typeof(UnitTestSetupBase),
-            DynamicDataSourceType.Method)]
+            typeof(UnitTestSetupBase))]
         public async Task GetEmailTemplateDetailsAsyncTests(
             EmailTemplateRequest emailTemplateRequest,
             NotifyTemplateDetails apiResponse,
