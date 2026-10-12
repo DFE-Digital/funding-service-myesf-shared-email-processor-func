@@ -10,7 +10,7 @@ The Manage Your Education and Skills Funding Shared Email Processor Function app
 
 ## About this project
 
-This project is a .Net 8 Isolated Worker Azure Function project utilizing an Azure Function App for deployment.
+This project is a .Net 10 Isolated Worker Azure Function project utilizing an Azure Function App for deployment.
 
 **Note:** The project is currently being updated to be containerised via Docker where the deployment method and target will change, this document will be updated when these changes have been finalised.
 
